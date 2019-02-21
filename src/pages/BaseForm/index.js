@@ -17,88 +17,100 @@ const radioData = [
   { value: 1, label: 'bachelor' },
 ];
 
-console.log('provinceLite', provinceLite)
-
 const checkData = [
   { value: 0, label: 'Ph.D.' },
   { value: 1, label: 'Bachelor' },
   { value: 2, label: 'College diploma' },
 ];
 
-const CustomChildren = props => (
-  <div
-    onClick={props.onClick}
-    style={{ backgroundColor: '#fff', paddingLeft: 15 }}
-  >
-    <div className="test" style={{ display: 'flex', height: '45px', lineHeight: '45px' }}>
-      <div style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{props.children}</div>
-      <div style={{ textAlign: 'right', color: '#888', marginRight: 15 }}>{props.extra}</div>
-    </div>
-  </div>
-);
-const seasons = [
-  [
-    {
-      label: '2013',
-      value: '2013',
-    },
-    {
-      label: '2014',
-      value: '2014',
-    },
-    {
-      label: '2015',
-      value: '2015',
-    },
-    {
-      label: '2016',
-      value: '2016',
-    },
-  ],
-  [
-    {
-      label: '春',
-      value: '春',
-    },
-    {
-      label: '夏',
-      value: '夏',
-    },
-    {
-      label: '秋',
-      value: '秋',
-    },
-    {
-      label: '冬',
-      value: '冬',
-    },
-  ],
+/** 头部状态 start */
+const getStatus = [
+  {
+    statusName: '状态名1',
+    statusDsc: '状态描述1',
+  },
+  {
+    statusName: '状态名2',
+    statusDsc: '状态描述2',
+  },
+  {
+    statusName: '状态名3',
+    statusDsc: '状态描述3',
+  },
 ];
 
-class beforefrom extends React.Component {
-  
+function StatusChild(props) {
+  return (
+    <div className="status">
+      <div className="status-head">{props.status.statusName}</div>
+      <div className="status-desc">{props.status.statusDsc}</div>
+    </div>
+  );
+}
+
+class Schedule extends React.Component {
+
   constructor(props) {
-    super(props)
+    super(props);
+    this.state = {
+      barStatus: 0,
+    }
+  }
+
+  setBars(index) {
+    this.setState({
+      barStatus: index
+    })
+  }
+
+  render() {
+    const statusArr = this.props.statusArr;
+    let barspos = '';
+    const BarItems = statusArr.map((v, index) => {
+      switch(index) {
+        case 0:
+          barspos = 'bars-l';
+          break;
+        case 1:
+          barspos = 'bars-c';
+          break;
+        case 2:
+          barspos = 'bars-r';
+          break;
+      };
+      return (
+        <div key={index.toLocaleString()} className={`bars-item ${barspos} ${this.state.barStatus === index ? 'active' : ''}`} onClick={() => this.setBars(index)}></div>
+      );
+    });
+    const StatusItems = statusArr.map((v, index) => 
+      <StatusChild key={index.toLocaleString()} status={v} />
+    );
+    return (
+      <div className="schedule">
+        <div className="schedule-bars">
+          {BarItems}
+        </div>
+        <div className="schedule-status">
+          {StatusItems}
+        </div>
+      </div>
+    )
+  }
+}
+/** 头部状态 end */
+
+/** 所属地区 start */
+class BelongDistrict extends React.Component {
+
+  constructor(props) {
+    super(props);
     this.state = {
       data: [],
       cols: 1,
       asyncValue: [],
-      barStatus: 0,
-      value: 0,
-      sValue: ['2013', '春'],
-    };
-    this.radioChange = this.radioChange.bind(this)
-    this.elAddress = this.elAddress.bind(this)
+    }
     this.changeAddress = this.changeAddress.bind(this)
-  }
-
-  elAddress() {
-    setTimeout(() => {
-      this.setState({
-        data: provinceLite,
-      });
-      console.log(this.state, 'state')
-    }, 120);
+    this.elAddress = this.elAddress.bind(this)
   }
 
   changeAddress(val) {
@@ -143,14 +155,132 @@ class beforefrom extends React.Component {
     });
   }
 
-  setBars(index) {
-    this.setState({
-      barStatus: index,
-    })
+  elAddress() {
+    setTimeout(() => {
+      this.setState({
+        data: provinceLite,
+      });
+    }, 120);
+  }
+
+  render() {
+    return (
+      <Picker
+        data={this.state.data}
+        cols={this.state.cols}
+        value={this.state.asyncValue}
+        onPickerChange={this.changeAddress}
+        onOk={v => console.log(v)}
+      >
+        <List.Item arrow="horizontal" onClick={this.elAddress}>所属地区</List.Item>
+      </Picker>
+    )
+  }
+}
+/** 所属地区 end */
+
+/** 选择季节 start */
+const seasons = [
+  [
+    {
+      label: '2013',
+      value: '2013',
+    },
+    {
+      label: '2014',
+      value: '2014',
+    },
+    {
+      label: '2015',
+      value: '2015',
+    },
+    {
+      label: '2016',
+      value: '2016',
+    },
+  ],
+  [
+    {
+      label: '春',
+      value: '春',
+    },
+    {
+      label: '夏',
+      value: '夏',
+    },
+    {
+      label: '秋',
+      value: '秋',
+    },
+    {
+      label: '冬',
+      value: '冬',
+    },
+  ],
+];
+class ElSeasons extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      sValue: ['2013', '春'],
+    }
+  }
+
+  render() {
+    return (
+      <List renderHeader={() => '标签'}>
+        <Picker
+          data={seasons}
+          title="选择季节"
+          cascade={false}
+          extra="请选择(可选)"
+          value={this.state.sValue}
+          onChange={v => this.setState({ sValue: v })}
+          onOk={v => this.setState({ sValue: v })}
+        >
+          <List.Item arrow="horizontal">选择季节</List.Item>
+        </Picker>
+      </List>
+    )
+  }
+}
+/** 选择季节 end */
+
+/** 上下页 start */
+class PrevnextPage extends React.Component {
+
+  constructor(props) {
+    super(props)
   }
 
   nextPage() {
     window.location.href ='/#/bank-card'
+  }
+
+  render() {
+    return (
+      <div className="basearrows">
+        <div className="arrowbtn arrow-pre">
+          <Icon color="#AEAEB0" type="left" size="sm"></Icon>
+        </div>
+        <div className="arrowbtn arrow-next" onClick={this.nextPage}>
+          <Icon type="right" size="sm"></Icon>
+        </div>
+      </div>
+    )
+  }
+}
+/** 上下页 end */
+
+class beforefrom extends React.Component {
+  
+  constructor(props) {
+    super(props)
+    this.state = {
+      value: 0,
+    }
+    this.radioChange = this.radioChange.bind(this)
   }
 
   radioChange(value) {
@@ -165,47 +295,17 @@ class beforefrom extends React.Component {
 
   render() {
     const { value } = this.state;
-
-    
     const { getFieldProps } = this.props.form;
 
     return (
       <div className="m-base">
-        <div className="schedule">
-          <div className="schedule-bars">
-            <div className={`bars-item bars-l ${this.state.barStatus === 0 ? 'active': null}`} onClick={() => this.setBars(0)}></div>
-            <div className={`bars-item bars-c ${this.state.barStatus === 1 ? 'active': null}`} onClick={() => this.setBars(1)}></div>
-            <div className={`bars-item bars-r ${this.state.barStatus === 2 ? 'active': null}`} onClick={() => this.setBars(2)}></div>
-          </div>
-          <div className="schedule-status">
-            <div className="status">
-              <div className="status-head">状态名1</div>
-              <div className="status-desc">状态描述</div>
-            </div>
-            <div className="status">
-              <div className="status-head">状态名2</div>
-              <div className="status-desc">状态描述</div>
-            </div>
-            <div className="status">
-              <div className="status-head">状态名3</div>
-              <div className="status-desc">状态描述</div>
-            </div>
-          </div>
-        </div>
+        <Schedule statusArr={getStatus} />
         <List renderHeader={() => '基础选项'}>
           <InputItem
             placeholder="填写后不可修改"
             ref={el => this.labelFocusInst = el}
           ><div onClick={() => this.labelFocusInst.focus()}>真实姓名</div></InputItem>
-          <Picker
-            data={this.state.data}
-            cols={this.state.cols}
-            value={this.state.asyncValue}
-            onPickerChange={this.changeAddress}
-            onOk={v => console.log(v)}
-          >
-            <List.Item arrow="horizontal" onClick={this.elAddress}>所属地区</List.Item>
-          </Picker>
+          <BelongDistrict />
           <InputItem type="phone"
             placeholder="请输入手机号码"
           >手机号码</InputItem>
@@ -224,32 +324,14 @@ class beforefrom extends React.Component {
             </CheckboxItem>
           ))}
         </List>
-        <List renderHeader={() => '标签'}>
-          <Picker
-            data={seasons}
-            title="选择季节"
-            cascade={false}
-            extra="请选择(可选)"
-            value={this.state.sValue}
-            onChange={v => this.setState({ sValue: v })}
-            onOk={v => this.setState({ sValue: v })}
-          >
-            <List.Item arrow="horizontal">选择季节</List.Item>
-          </Picker>
-        </List>
+        <ElSeasons />
         <div className="btngroup">
           <WingBlank>
             <Button className="btnword">按钮文字</Button>
           </WingBlank>
         </div>
-        <div className="basearrows">
-          <div className="arrowbtn arrow-pre">
-            <Icon color="#AEAEB0" type="left" size="sm"></Icon>
-          </div>
-          <div className="arrowbtn arrow-next" onClick={this.nextPage}>
-            <Icon type="right" size="sm"></Icon>
-          </div>
-        </div>
+        <PrevnextPage />
+        
       </div>
     );
   }

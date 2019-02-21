@@ -10,7 +10,6 @@ import HomePage from "./pages/HomePage";
 import Search from "./pages/Search";
 import baseForm from "./pages/BaseForm";
 import bankCard from './pages/BaseForm/bankCard'
-import testPick from './pages/BaseForm/testpick'
 // import './assets/style/app.css';
 import 'antd-mobile/dist/antd-mobile.css';
 
@@ -23,7 +22,6 @@ ReactDOM.render((
         <Route path="/article-detail" component={ArticleDetail} />
         <Route path="/base-from" component={baseForm} />
         <Route path="/bank-card" component={bankCard} />
-        <Route path="/testpick" component={testPick} />
         <Route path="/member" component={Member} />
       </Switch>
       <Tabbar />
