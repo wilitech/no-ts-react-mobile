@@ -8,8 +8,8 @@ import './assets/style/app.less';
 import './assets/js/rem.js';
 import HomePage from "./pages/HomePage";
 import Search from "./pages/Search";
-import baseForm from "./pages/BaseForm";
-import bankCard from './pages/BaseForm/bankCard'
+import BaseForm from "./pages/BaseForm";
+import BankCard from './pages/BaseForm/BankCard'
 // import './assets/style/app.css';
 import 'antd-mobile/dist/antd-mobile.css';
 
@@ -20,8 +20,8 @@ ReactDOM.render((
         <Route exact path="/" component={HomePage} />
         <Route path="/search" component={Search} />
         <Route path="/article-detail" component={ArticleDetail} />
-        <Route path="/base-from" component={baseForm} />
-        <Route path="/bank-card" component={bankCard} />
+        <Route path="/base-from" component={BaseForm} />
+        <Route path="/bank-card" component={BankCard} />
         <Route path="/member" component={Member} />
       </Switch>
       <Tabbar />
