@@ -1,7 +1,7 @@
 # REACT-TEMPLATE
 
 ### 项目说明
-技术栈：React、React-router、Webpack、Antd-design
+技术栈：React、React-router、Webpack、Antd-design <br />
 本模板由原模板修改，移除了typescript，使用 react-router v4
 
 ### 项目运行
