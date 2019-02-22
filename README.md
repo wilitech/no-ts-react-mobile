@@ -1,8 +1,8 @@
 # REACT-TEMPLATE
 
 ### 项目说明
-技术栈：React、React-router、Webpack、Antd-design
-本模板由原模板修改，移除了typescript，使用 react-router v4
+技术栈：React、React-router、Webpack、Antd-design <br />
+本模板由原模板修改，移除了typescript，使用 react-router v4, 引入 PropTypes检查类型
 
 ### 项目运行
 ```bash

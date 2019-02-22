@@ -1,11 +1,13 @@
-
 import * as  React from 'react';
-import { render } from 'react-dom';
 import {
-  Icon, List, Radio, Flex, WhiteSpace, Checkbox, InputItem, Button, WingBlank, Picker
+  List, Radio, Checkbox, InputItem, Button, WingBlank
 } from 'antd-mobile';
 import { district, provinceLite } from 'antd-mobile-demo-data';
 import { createForm } from 'rc-form';
+import PrevNext from '@/components/baseform/PrevNext';
+import Schedule from '@/components/baseform/Schedule';
+import BelongDistrict from '@/components/baseform/BelongDistrict';
+import ElSeasons from '@/components/baseform/ElSeasons';
 
 import './index.less';
 
@@ -23,7 +25,7 @@ const checkData = [
   { value: 2, label: 'College diploma' },
 ];
 
-/** 头部状态 start */
+/** 头部状态 */
 const getStatus = [
   {
     statusName: '状态名1',
@@ -39,147 +41,7 @@ const getStatus = [
   },
 ];
 
-function StatusChild(props) {
-  return (
-    <div className="status">
-      <div className="status-head">{props.status.statusName}</div>
-      <div className="status-desc">{props.status.statusDsc}</div>
-    </div>
-  );
-}
-
-class Schedule extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      barStatus: 0,
-    }
-  }
-
-  setBars(index) {
-    this.setState({
-      barStatus: index
-    })
-  }
-
-  render() {
-    const statusArr = this.props.statusArr;
-    let barspos = '';
-    const BarItems = statusArr.map((v, index) => {
-      switch(index) {
-        case 0:
-          barspos = 'bars-l';
-          break;
-        case 1:
-          barspos = 'bars-c';
-          break;
-        case 2:
-          barspos = 'bars-r';
-          break;
-      };
-      return (
-        <div key={index.toLocaleString()} className={`bars-item ${barspos} ${this.state.barStatus === index ? 'active' : ''}`} onClick={() => this.setBars(index)}></div>
-      );
-    });
-    const StatusItems = statusArr.map((v, index) => 
-      <StatusChild key={index.toLocaleString()} status={v} />
-    );
-    return (
-      <div className="schedule">
-        <div className="schedule-bars">
-          {BarItems}
-        </div>
-        <div className="schedule-status">
-          {StatusItems}
-        </div>
-      </div>
-    )
-  }
-}
-/** 头部状态 end */
-
-/** 所属地区 start */
-class BelongDistrict extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
-      cols: 1,
-      asyncValue: [],
-    }
-    this.changeAddress = this.changeAddress.bind(this)
-    this.elAddress = this.elAddress.bind(this)
-  }
-
-  changeAddress(val) {
-    console.log(val);
-    let colNum = 1;
-    const d = [...this.state.data];
-    const asyncValue = [...val];
-    if (val[0] === 'zj') {
-      d.forEach((i) => {
-        if (i.value === 'zj') {
-          colNum = 2;
-          if (!i.children) {
-            i.children = [{
-              value: 'zj-nb',
-              label: '宁波',
-            }, {
-              value: 'zj-hz',
-              label: '杭州',
-            }];
-            asyncValue.push('zj-nb');
-          } else if (val[1] === 'zj-hz') {
-            i.children.forEach((j) => {
-              if (j.value === 'zj-hz') {
-                j.children = [{
-                  value: 'zj-hz-xh',
-                  label: '西湖区',
-                }];
-                asyncValue.push('zj-hz-xh');
-              }
-            });
-            colNum = 3;
-          }
-        }
-      });
-    } else {
-      colNum = 1;
-    }
-    this.setState({
-      data: d,
-      cols: colNum,
-      asyncValue,
-    });
-  }
-
-  elAddress() {
-    setTimeout(() => {
-      this.setState({
-        data: provinceLite,
-      });
-    }, 120);
-  }
-
-  render() {
-    return (
-      <Picker
-        data={this.state.data}
-        cols={this.state.cols}
-        value={this.state.asyncValue}
-        onPickerChange={this.changeAddress}
-        onOk={v => console.log(v)}
-      >
-        <List.Item arrow="horizontal" onClick={this.elAddress}>所属地区</List.Item>
-      </Picker>
-    )
-  }
-}
-/** 所属地区 end */
-
-/** 选择季节 start */
+/** 选择季节 */
 const seasons = [
   [
     {
@@ -218,62 +80,8 @@ const seasons = [
     },
   ],
 ];
-class ElSeasons extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      sValue: ['2013', '春'],
-    }
-  }
-
-  render() {
-    return (
-      <List renderHeader={() => '标签'}>
-        <Picker
-          data={seasons}
-          title="选择季节"
-          cascade={false}
-          extra="请选择(可选)"
-          value={this.state.sValue}
-          onChange={v => this.setState({ sValue: v })}
-          onOk={v => this.setState({ sValue: v })}
-        >
-          <List.Item arrow="horizontal">选择季节</List.Item>
-        </Picker>
-      </List>
-    )
-  }
-}
-/** 选择季节 end */
-
-/** 上下页 start */
-class PrevnextPage extends React.Component {
-
-  constructor(props) {
-    super(props)
-  }
-
-  nextPage() {
-    window.location.href ='/#/bank-card'
-  }
-
-  render() {
-    return (
-      <div className="basearrows">
-        <div className="arrowbtn arrow-pre">
-          <Icon color="#AEAEB0" type="left" size="sm"></Icon>
-        </div>
-        <div className="arrowbtn arrow-next" onClick={this.nextPage}>
-          <Icon type="right" size="sm"></Icon>
-        </div>
-      </div>
-    )
-  }
-}
-/** 上下页 end */
-
-class beforefrom extends React.Component {
+class BeforFrom extends React.Component {
   
   constructor(props) {
     super(props)
@@ -291,6 +99,10 @@ class beforefrom extends React.Component {
 
   checkChange(value) {
     console.log(value)
+  }
+
+  handleNext() {
+    window.location.href ='/#/bank-card'
   }
 
   render() {
@@ -324,18 +136,19 @@ class beforefrom extends React.Component {
             </CheckboxItem>
           ))}
         </List>
-        <ElSeasons />
+        <ElSeasons seasonsList={seasons} />
         <div className="btngroup">
           <WingBlank>
             <Button className="btnword">按钮文字</Button>
           </WingBlank>
         </div>
-        <PrevnextPage />
+
+        <PrevNext curpage="next" nextHandler={this.handleNext} />
         
       </div>
     );
   }
 }
-const basefrom = createForm()(beforefrom);
+const BaseForm = createForm()(BeforFrom);
 
-export default basefrom
+export default BaseForm
