@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin'); //生成html
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -9,21 +8,14 @@ const resolve = (dir) => {
 }
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: {
     app: "./src/app.js",
   },
   output: {
     publicPath: '',
-    filename: "js/[name].js",
-    path: path.resolve(__dirname, 'dist')
-  },
-  // webpack-dev-server 运行时会读取这里的配置
-  devServer: {
-    port: 3000,
-    contentBase: './dist',
-    // proxy
-    host: '0.0.0.0'
+    filename: "js/[name].[hash].js",
+    path: path.resolve(__dirname, '../dist')
   },
   devtool: 'source-map',
   resolve: {
@@ -32,17 +24,13 @@ module.exports = {
     alias: {
       '@': resolve('src'),
       '-': resolve('static')
-    }
+    }    
   },
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: [{
-          loader: 'style-loader'
-        }, {
-          loader: 'css-loader'
-        }, {
+        loaders: ['style-loader', 'css-loader', {
           loader: require.resolve('postcss-loader'),
           options: {
             ident: 'postcss',
@@ -109,19 +97,19 @@ module.exports = {
       //   exclude: /^node_modules$/,
       //   loader: "awesome-typescript-loader"
       // }
-    ],
+    ]
   },
   plugins: [
-    new CleanWebpackPlugin(['dist'], {
-      root: path.resolve(__dirname, ''), // 根目录，默认为当前目录
+    new CleanWebpackPlugin(['dist/*'], {
+      root: path.resolve(__dirname, '../'), // 根目录，默认为当前目录
       exclude: [],
-      verbose: true,
-      dry: false
+      verbose: true //开启在控制台输出信息
+      // dry: true //启用删除文件
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: 'src/index.html',
-      inject: false, // 样式注入html
+      template: 'public/index.html',
+      inject: true,
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -132,7 +120,12 @@ module.exports = {
     }),
     new CopyWebpackPlugin([
       {
-        from: 'static',
+        from: 'static', // 不配置 to 默认会 copy 到 dist 目录也就是 webpack 的 output 配置
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: 'public'
       }
     ])
   ]

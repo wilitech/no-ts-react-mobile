@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "webpack-dev-server --config webpackConfig/webpack.dev.config.js",
-    "build": "webpack --config webpackConfig/webpack.build.config.js --progress --colors"
+    "dev": "webpack-dev-server --config build/webpack.dev.config.js",
+    "build": "webpack --config build/webpack.build.config.js --progress --colors"
   },
   "author": "",
   "license": "ISC",
